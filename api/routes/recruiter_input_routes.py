@@ -37,10 +37,13 @@ def process_recruiter_input(data: RecruiterInput):
         # Enrich using KM Agent
         context_docs = search_knowledge_base(input_text, faiss_index, doc_store)
         enriched_answer = generate_answer(input_text, context_docs)
+        
+        job_offer = generate_offer(enriched_answer)
 
         return {
             "input_type": "INTERNAL",
             "enriched_from_km": enriched_answer,
+            "job_offer": job_offer,
             "sources": context_docs
         }
 
@@ -69,9 +72,12 @@ def process_recruiter_input(data: RecruiterInput):
 
         enricher = EnrichJobDataWithKM()
         enriched = enricher._run(job_data)
+        
+        offer = generate_offer(enriched)
 
         return {
             "input_type": "DETAILED",
+            "job_offer" : offer,
             "job_data": job_data,
             "enriched_data": enriched
         }

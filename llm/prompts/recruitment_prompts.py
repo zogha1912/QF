@@ -3,8 +3,12 @@ def get_classification_prompt(cv_text: str, job_context: str = "") -> str:
     
     return (
         f'You are an HR assistant tasked with classifying candidates into one of three categories: High, Medium, or Low potential.\n\n'
-        f'Candidate CV:\n"""\n{cv_text}\n"""\n{job_section}\n\n'
-        'Please classify the candidate and explain briefly why you chose that category. Respond only with the category and a short justification.'
+        f'Candidate CV:\n"""\n{cv_text}\n"""{job_section}\n\n'
+        'Please do the following:\n'
+        '1. Classify the candidate as High, Medium, or Low potential.\n'
+        '2. Provide a brief justification for your classification.\n'
+        '3. If the candidate is High or Medium potential, list 3–5 relevant interview questions that would help assess their fit, technical skills, or motivation.\n\n'
+        'Respond with the classification, justification, and the interview questions (if applicable).'
     )
 
 
@@ -58,7 +62,7 @@ Please analyze the CV and produce a structured evaluation following this structu
    - List the technical tools, programming languages, or technologies the candidate is proficient in.
 
 5. **EXPÉRIENCE** (Experience)
-   - Summarize the candidate's professional background (years of experience, companies, industries).
+   - Copy as is from the cv provided .
 
 6. **SOFT SKILLS** (Soft Skills)
    - Highlight interpersonal, communication, leadership, and organizational skills.

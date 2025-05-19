@@ -4,13 +4,25 @@ import os
 from tempfile import NamedTemporaryFile
 from typing import List
 
-def extract_text_from_pdf_ocr(pdf_path: str) -> str:
+
+from pdf2image import convert_from_bytes
+import pytesseract
+from PIL import Image
+
+def extract_text_from_pdf_ocr(file_bytes: bytes) -> str:
+    images = convert_from_bytes(file_bytes)
+    text = ""
+    for image in images:
+        text += pytesseract.image_to_string(image)
+    return text
+
+""" def extract_text_from_pdf_ocr(pdf_path: str) -> str:
     images = convert_from_path(pdf_path)
     full_text = ""
     for img in images:
         text = pytesseract.image_to_string(img)
         full_text += text + "\n"
-    return full_text
+    return full_text """
 
 def extract_texts_from_multiple_pdfs(files: List[bytes]) -> List[str]:
     texts = []
