@@ -1,0 +1,15 @@
+#ignore python cache
+__pycache__/
+
+#ignore 
+requirements.txt
+.env
+
+Lib/
+
+data/
+
+
+multi-agent/
+
+temp/

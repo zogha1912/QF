@@ -1,0 +1,1 @@
+from llm.prompts.recruitment_prompts import get_report_prompt
