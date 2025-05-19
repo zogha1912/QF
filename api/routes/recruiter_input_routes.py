@@ -9,7 +9,11 @@ from agents.recruitment_agent.tools.detect_internal_profile import DetectInterna
 from agents.km_agent.embed_store import store_embedding, load_faiss_index, save_faiss_index
 from agents.km_agent.search import search_knowledge_base, generate_answer
 from agents.km_agent.models.schemas import QueryRequest
+from agents.recruitment_agent.tools.generate_offer import generate_offer
 
+from uuid import uuid4
+
+clarification_store = {} 
 
 router = APIRouter()
 faiss_index, doc_store = load_faiss_index()
@@ -44,9 +48,18 @@ def process_recruiter_input(data: RecruiterInput):
     if input_type == "VAGUE":
         clarification_tool = GenerateClarificationQuestions()
         questions = clarification_tool._run(input_text)
+        
+        # Generate a unique ID and store the original input and questions
+        clarification_id = str(uuid4())
+        clarification_store[clarification_id] = {
+            "original_input": input_text,
+            "questions": questions
+        }
         return {
             "input_type": "VAGUE",
-            "clarification_questions": questions
+            "clarification_id": clarification_id,
+            "clarification_questions": questions,
+            
         }
 
     # Step 4: Handle detailed input
@@ -64,3 +77,46 @@ def process_recruiter_input(data: RecruiterInput):
         }
 
     return {"error": "Unable to classify input"}
+
+class ClarificationResponse(BaseModel):
+    clarification_id: str
+    answers: str  # Free-form answer from recruiter (single field or full paragraph)
+
+@router.post("/recruiter/clarification/respond")
+def handle_clarification_response(data: ClarificationResponse):
+    entry = clarification_store.get(data.clarification_id)
+    if not entry:
+        return {"error": "Invalid or expired clarification ID."}
+
+    original_input = entry["original_input"]
+
+    # Merge original vague message with the new recruiter input
+    combined = f"""
+        The recruiter originally said:
+        \"\"\"{original_input}\"\"\"
+
+        They clarified with:
+        \"\"\"{data.answers}\"\"\"
+            """.strip()
+
+    # Run same flow
+    classifier = ClassifyRecruiterInput()
+    input_type = classifier._run(combined)
+
+    if input_type == "DETAILED":
+        extractor = ExtractJobDetails()
+        job_data = extractor._run(combined)
+
+        enricher = EnrichJobDataWithKM()
+        enriched = enricher._run(job_data)
+        
+        job_offer = generate_offer(combined)
+
+        return {
+            "input_type": "DETAILED_AFTER_CLARIFICATION",
+            "job_data": job_data,
+            "enriched_data": enriched,
+            "job_offer": job_offer
+        }
+
+    return {"message": "Clarification insufficient.", "input_type": input_type}

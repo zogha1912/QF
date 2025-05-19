@@ -10,7 +10,7 @@ def get_classification_prompt(cv_text: str, job_context: str = "") -> str:
 
 def get_offer_prompt(hr_input: str) -> str:
     return (
-        "You are a professional HR recruiter. Based on the following need, generate a complete and structured job description including: "
+        "You are a professional HR recruiter in QUANTEAM. Based on the following need, generate a complete and structured job description including: "
         "title, responsibilities, required skills, and experience.\n\n"
         f"HR input: {hr_input}\n\n"
         "Return the result in the following format:\n"
