@@ -1,0 +1,15 @@
+[Company Logo]
+
+Date: {{ current_date }}
+
+To whom it may concern,
+
+This is to certify that Ms./Mr. {{ full_name }}, holder of CIN number {{ CIN_number }}, is employed with our company as a {{ job_title }} since {{ date_of_hire }} under a {{ contract_type }} contract in the {{ department }} department.
+
+This certificate is issued upon the employee’s request for administrative purposes.
+
+Sincerely,
+
+{{ manager }}
+
+[Company Stamp / Signature]
