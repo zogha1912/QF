@@ -31,7 +31,7 @@ class Employee(Base):
     requests = relationship("AttestationRequest", back_populates="employee")
 
 class AttestationRequest(Base):
-    __tablename__ = "attestation_requests"
+    __tablename__ = "attestations_requests"
 
     id = Column(Integer, primary_key=True, index=True)
     employee_id = Column(Integer, ForeignKey("employee.id"))

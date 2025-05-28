@@ -43,4 +43,7 @@ class AttestationRequestOut(BaseModel):
 
     class Config:
         orm_mode = True
+        fields = {
+            'attestation_type': 'request_type'  # maps model.request_type → attestation_type
+        }
 
