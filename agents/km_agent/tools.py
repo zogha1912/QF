@@ -1,5 +1,5 @@
 # tools.py
-from langchain.tools import tool
+from crewai.tools import tool
 from .search import search_knowledge_base, generate_answer
 from .embed_store import load_faiss_index
 
