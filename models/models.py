@@ -1,6 +1,6 @@
 
 
-from sqlalchemy import Column, Integer, String, Date, Enum, ForeignKey
+from sqlalchemy import Column, Integer, String, Date, Enum, ForeignKey, Text
 from sqlalchemy.orm import relationship
 from databse.database import Base
 import enum
@@ -31,12 +31,13 @@ class Employee(Base):
     requests = relationship("AttestationRequest", back_populates="employee")
 
 class AttestationRequest(Base):
-    __tablename__ = "attestations_requests"
+    __tablename__ = "attestation_requests"
 
     id = Column(Integer, primary_key=True, index=True)
     employee_id = Column(Integer, ForeignKey("employee.id"))
     status = Column(Enum(StatusEnum), default=StatusEnum.pending)
     request_date = Column(Date)
     request_type = Column(String)
+    file_path = Column(Text, nullable=True)
 
     employee = relationship("Employee", back_populates="requests")

@@ -13,6 +13,7 @@ Base = declarative_base()
 
 # Créer les tables (à appeler au démarrage de l'application)
 def init_db():
+    #Base.metadata.drop_all(bind=engine)
     Base.metadata.create_all(bind=engine)
 
 # Fournisseur de session DB pour les dépendances FastAPI
